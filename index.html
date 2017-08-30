@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="htpps://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.9/css/weather-icons.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+</head>
+
+<style>
+
+
+body {
+  margin: auto;
+}
+
+html, body {
+  height:100%;
+  background-image: url(http://www.wallpaperawesome.com/wallpapers-awesome/wallpapers-weather-clouds-tornado-rain-cyclone-flashlights-awesome/wallpaper-lighting-storm-weather.jpg);
+}
+
+
+#content {
+  margin: 50px 10%;
+}
+
+#icon {
+  font-size: 10em;
+  color: #FFFFFF;
+}
+
+#summary {
+  font-size: 4em;
+  color: #ffa500;
+}
+
+#temperature, #deg {
+  display:inline;
+  font-size: 6em;
+  color: #ffa500;
+}
+
+#tempswitch {
+  font-size: 3em;
+}
+
+#thebutton {
+  margin: 0 0 100px 0;
+}
+
+footer {
+  height:4em;
+  bottom:0;
+  padding: 0 10%;
+  left:0;
+  right:0;
+  position: relative;
+  color: #ffa500;
+  
+}
+
+a {
+  color:#000;
+}
+
+a:hover {
+  text-decoration:none;
+}
+</style>
+
+<body>
+<div class='container'>
+    <div id="content">
+      <div class="row">
+        <div class="col-xs-0 col-md-3"></div>
+        <div class="col-xs-4 col-md-3">
+          <div id='icon' class="wi wi-snow">
+          </div>
+        </div>
+        <div class="col-xs-8 col-md-3">
+          <div id='summary' class='text-center'>
+            Local Weather App
+          </div>
+        </div>
+        <div class="col-xs-0 col-md-3"></div>
+      </div>
+      <br><br>
+      <div class="row text-center">
+        <div id='temp' class="col-xs-12">
+          <div id="temperature">77
+          </div>
+          <div id="deg" class="wi wi-fahrenheit"></div>  
+      </div>
+    
+      
+      <div id='thebutton' class="row">
+        <div class="col-xs-2 col-sm-4"></div>
+        <button id="tempswitch" type="button" class="btn-lg col-xs-8 col-sm-4">
+          <div class="wi wi-fahrenheit"> / <div class="wi wi-celsius">
+        </button>
+      <div class="col-xs-2 col-sm-4"></div>
+  
+    </div>
+          
+    
+      
+    <footer class="text-center">
+      <hr>
+      <p id="bottom_text">Cypriano Akinwunmi 2017 | <a href="https://www.linkedin.com/in/cypriano-akinwunmi-33383063/" target="_blank"><i class="fa fa-linkedin-square"></i></a> | <a href="https://github.com/cykins4good" target="_blank"><i class="fa fa-github-square"></i></a> |  <a href="https://www.instagram.com/kennethjmyers/" target="_blank"><i class="fa fa-instagram"></i></a></p>
+    </footer>
+
+  
+  </div>
+</body> 
+
+<script>
+var apiKey = 'fad4cac23d331198eba7852ff9ebabf9';
+
+var weatherIcons = { 
+  //format is api_icon:[weather-icon-font,bg-color-key,font-color]
+  'clear-day': ['wi-day-sunny', '#ffff33','#000000'],
+  'clear-night': ['wi-night-clear', '#2d2d86','#ffffff'],
+  'rain': ['wi-rain', '#003399', '#ffffff'], 
+  'snow': ['wi-snow','#ccffff', '#000000'], 
+  'sleet': ['wi-sleet', '#ccffff', '#000000'], 
+  'wind': ['wi-strong-wind', '#80bfff', '#ffffff'], 
+  'fog': ['wi-fog', '#248f8f','#000000'], 
+  'cloudy': ['wi-cloudy', '#8b8b8d','#000000'], 
+  'partly-cloudy-day': ['wi-day-cloudy', '#ffffcc','#000000'],
+  'partly-cloudy-night': ['wi-night-alt-cloudy', '#2d2d86','#ffffff'],
+  'hail': ['wi-hail', '#ccffff', '#000000'], 
+  'thunderstorm': ['wi-storm-showers', '#4b4f4c','#ffffff'],
+  'tornado': ['wi-tornado','#ff6600','#000000']
+}
+
+function getLocation() {
+    if (navigator.geolocation) {
+        return navigator.geolocation.getCurrentPosition(function (position) {
+          var loc = [position.coords.latitude, position.coords.longitude];
+          
+          var LATITUDE = loc[0];
+          var LONGITUDE = loc[1];
+          var url = 'https://api.forecast.io/forecast/' + apiKey + '/' + LATITUDE + ',' + LONGITUDE;
+          console.log(url);
+          data = $.ajax({ 
+            type: "GET",
+            url: url,
+            dataType: 'jsonp',
+            success: function(data){        
+              //console.log(data);
+              var icon = data.currently.icon;
+              temperature = data.currently.apparentTemperature;
+              c_temperature = (temperature-32)*5/9
+              var summary = data.currently.summary;
+              var icon_to_display = weatherIcons[icon]
+              //change background, font and button
+              $("body").css('color',icon_to_display[2])
+              $("body").css('background-color',icon_to_display[1])
+              $("#tempswitch").css('background-color',icon_to_display[1])
+              $("#tempswitch").css('border-color',icon_to_display[2])
+              $("#icon").removeClass().addClass('wi '+ icon_to_display[0])
+              $("#summary").html(summary)
+              $('#temperature').html(temperature)
+              $('#bottom_text').css('color', icon_to_display[2])
+              $('a').css('color', icon_to_display[2])
+              $('hr').css('border-color', icon_to_display[2])
+            }
+          });      
+        });
+    } else {
+        console.log("Geolocation is not supported by this browser.");
+    }
+}
+
+$(document).ready(function() {  
+  getLocation()
+  $('#tempswitch').on('click', function() {
+    if ($('#deg').hasClass('wi-fahrenheit')) {
+      temp = c_temperature
+    } else {
+      temp = temperature
+    }
+    temp = temp.toFixed(2)
+    $('#temperature').html(temp)
+    $('#deg').toggleClass('wi-fahrenheit wi-celsius')
+  })
+  
+  
+})
+</script>
+
+
