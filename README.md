@@ -13,5 +13,5 @@ This application makes the following api calls:
 
     * current weather - gets the current weather data.
 #### Live Demo
-You can find a live demo of this project at: 
+You can find a live demo of this project at: https://codepen.io/cykins4good/full/GvwoMP/
 
